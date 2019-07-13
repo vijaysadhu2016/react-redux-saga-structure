@@ -3,10 +3,12 @@
  * This is a Main Component of Application
  */
 import React, { Component, Fragment } from 'react';
-import { Row, Col, Input, Label } from 'reactstrap';
+import { connect } from "react-redux";
+import { Row, Col, Input } from 'reactstrap';
 //for Notification porpose on add/edit/delete
 import { NotificationManager, NotificationContainer } from 'react-notifications';
 
+import { productRemove } from "./actions";
 //product table component 
 import ProductTable from "./components/ProductTable";
 //all style import here
@@ -87,7 +89,9 @@ class App extends Component {
         list.splice(i, 1);
         return true;
       }
+      return false;
     });
+    this.props.productRemove(this.state.deleteId)
     this.setState({
       Product_List: list,
       isDeleteOpen: false,
@@ -216,4 +220,13 @@ class App extends Component {
   }
 }
 
-export default App;
+const mapDispatchToProps = {
+  productRemove
+}
+
+const mapStateToProps = ({ ProductReducer }) => {
+  const { loading, deleteProduct } = ProductReducer;
+  return { loading, deleteProduct };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(App);
