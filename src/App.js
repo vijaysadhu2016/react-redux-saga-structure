@@ -8,7 +8,7 @@ import { Row, Col, Input } from 'reactstrap';
 //for Notification porpose on add/edit/delete
 import { NotificationManager, NotificationContainer } from 'react-notifications';
 
-import { productRemove } from "./actions";
+import { productRemove, productAdd, productEdit } from "./actions";
 //product table component 
 import ProductTable from "./components/ProductTable";
 //all style import here
@@ -126,9 +126,10 @@ class App extends Component {
       isDeleteOpen: false,
       deleteId: "",
       editData: {},
-      isAddOpen: {},
+      isAddOpen: false,
       addData: {}
     })
+    this.props.productEdit(this.state.editData)
     NotificationManager.success("successfully updated record");
   }
 
@@ -153,6 +154,7 @@ class App extends Component {
       editData: {},
       deleteId: ""
     })
+    this.props.productAdd(this.state.addData)
     NotificationManager.success("successfully added record");
   }
 
@@ -163,7 +165,8 @@ class App extends Component {
       function find(arr) {
         var result = [];
         for (var i in arr) {
-          if (arr[i].product_name.toLowerCase().match(e.target.value.toLowerCase())) {
+          if (arr[i].product_name.toLowerCase().match(e.target.value.toLowerCase()) || 
+          arr[i].product_price.toLowerCase().match(e.target.value.toLowerCase())) {
             result.push(arr[i]);
           }
         }
@@ -205,7 +208,7 @@ class App extends Component {
               isEditOpen={isEditOpen}
               editData={editData}
               onEditData={this.onEditData}
-              onChange={this.onChangeEdit}
+              onChangeEdit={this.onChangeEdit}
               isAddOpen={isAddOpen}
               addData={addData}
               toggleAdd={this.toggleAdd}
@@ -221,12 +224,14 @@ class App extends Component {
 }
 
 const mapDispatchToProps = {
-  productRemove
+  productRemove,
+  productAdd,
+  productEdit
 }
 
 const mapStateToProps = ({ ProductReducer }) => {
-  const { loading, deleteProduct } = ProductReducer;
-  return { loading, deleteProduct };
+  const { loading, deleteProduct, addProduct } = ProductReducer;
+  return { loading, deleteProduct, addProduct };
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(App);
